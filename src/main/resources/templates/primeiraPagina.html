@@ -1,11 +1,11 @@
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title>Primeira página HTML com Thymeleaf</title>
 </head>
 
 <body>
-    <p>Primeira Página construída com thymeleaf</p>
+    <p th:text="${mensagemController}"></p>
 </body>
 
 </html>

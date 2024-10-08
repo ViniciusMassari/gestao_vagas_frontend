@@ -1,6 +1,7 @@
 package br.com.viniciusmassari.front_gestao_vagas;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -8,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class PrimeiraPaginaController {
     @GetMapping("/home")
-    public String primeiraPaginaHTML() {
+    public String primeiraPaginaHTML(Model model) {
+        model.addAttribute("mensagemController", "Olá mundo");
         return "primeiraPagina";
     }
 
