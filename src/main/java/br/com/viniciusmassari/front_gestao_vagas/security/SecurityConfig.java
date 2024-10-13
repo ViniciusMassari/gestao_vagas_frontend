@@ -10,14 +10,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String[] PERMIT_ALL_LIST = {
-            "/candidate/login", "/candidate/signIn"
-    };
+    // private static final String[] PERMIT_ALL_LIST = {
+    // "/candidate/login", "/candidate/signIn"
+    // };
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> {
-            auth.requestMatchers(PERMIT_ALL_LIST).permitAll();
+            auth.requestMatchers("/candidate/login", "/candidate/signIn").permitAll();
             auth.anyRequest().authenticated();
         }).formLogin(form -> form.loginPage("/candidate/login"));
 

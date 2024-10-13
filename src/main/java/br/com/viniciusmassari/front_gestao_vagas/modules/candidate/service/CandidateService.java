@@ -13,23 +13,22 @@ import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.Token;
 
 @Service
 public class CandidateService {
+
     public Token login(String username, String password) {
         RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, String> data = new HashMap<>();
         data.put("username", username);
         data.put("password", password);
 
-        // tipo do conteúdo Content-Type
-        // HttpHeaders precisa vir de springframework
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        // representação dos dados que iremos enviar
         HttpEntity<Map<String, String>> request = new HttpEntity<>(data, headers);
 
-        // requisição
         var result = rt.postForObject("http://localhost:8080/candidate/auth", request, Token.class);
+
+        System.out.println(result);
 
         return result;
     }
