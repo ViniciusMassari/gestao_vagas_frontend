@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.CreateCandidateDTO;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.Token;
 
 @Service
@@ -39,4 +40,17 @@ public class CandidateService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getDetails().toString();
     }
+
+    public void createCandidate(CreateCandidateDTO createCandidateDTO) {
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<CreateCandidateDTO> request = new HttpEntity<>(createCandidateDTO, headers);
+
+        var result = rt.postForObject("http://localhost:8080/candidate/", request, String.class);
+        System.out.println(result);
+    }
+
 }

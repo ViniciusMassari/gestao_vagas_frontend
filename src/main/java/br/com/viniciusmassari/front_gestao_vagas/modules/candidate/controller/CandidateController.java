@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.CreateCandidateDTO;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.ApplyJobService;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.CandidateService;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.FindJobsService;
@@ -46,7 +47,20 @@ public class CandidateController {
     }
 
     @GetMapping("/create")
-    public String create() {
+    public String create(Model model) {
+        model.addAttribute("candidate", new CreateCandidateDTO());
+        return "candidate/create";
+    }
+
+    @PostMapping("/create")
+    public String save(CreateCandidateDTO candidate, Model model) {
+        try {
+            this.candidateService.createCandidate(candidate);
+
+        } catch (HttpClientErrorException ex) {
+            model.addAttribute("error_message", ex.getMessage());
+        }
+        model.addAttribute("candidate", candidate);
         return "candidate/create";
     }
 
