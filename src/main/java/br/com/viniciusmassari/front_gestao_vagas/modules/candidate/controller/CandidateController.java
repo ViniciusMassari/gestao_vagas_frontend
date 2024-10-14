@@ -23,6 +23,7 @@ import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.Apply
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.CandidateService;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.FindJobsService;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.service.ProfileCandidateService;
+import br.com.viniciusmassari.front_gestao_vagas.utils.FormatErrorMessage;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -58,7 +59,8 @@ public class CandidateController {
             this.candidateService.createCandidate(candidate);
 
         } catch (HttpClientErrorException ex) {
-            model.addAttribute("error_message", ex.getMessage());
+            model.addAttribute("error_message",
+                    FormatErrorMessage.formatErrorMessage(ex.getResponseBodyAsString()));
         }
         model.addAttribute("candidate", candidate);
         return "candidate/create";
