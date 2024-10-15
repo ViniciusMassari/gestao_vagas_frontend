@@ -1,5 +1,6 @@
 package br.com.viniciusmassari.front_gestao_vagas.modules.company.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -12,9 +13,14 @@ import java.util.*;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.JobDTO;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.Token;
 import br.com.viniciusmassari.front_gestao_vagas.modules.company.dto.CreateCompanyDTO;
+import br.com.viniciusmassari.front_gestao_vagas.modules.company.dto.CreateJobsDTO;
 
 @Service
 public class CompanyService {
+
+    @Value("${host.api.gestao.vagas}")
+    private String hostAPIGestaoVagas;
+
     public String createCompany(CreateCompanyDTO createCompanyDTO) {
         RestTemplate rt = new RestTemplate();
 
@@ -22,8 +28,9 @@ public class CompanyService {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<CreateCompanyDTO> request = new HttpEntity<>(createCompanyDTO, headers);
+        var url = hostAPIGestaoVagas.concat("/company/");
 
-        return rt.postForObject("http://localhost:8080/company/", request, String.class);
+        return rt.postForObject(url, request, String.class);
     }
 
     public Token loginCompany(String username, String password) {
@@ -37,10 +44,9 @@ public class CompanyService {
         data.put("password", password);
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(data, headers);
+        var url = hostAPIGestaoVagas.concat("/company/auth");
 
-        var result = rt.postForObject("http://localhost:8080/company/auth", request, Token.class);
-
-        System.out.println(result);
+        var result = rt.postForObject(url, request, Token.class);
 
         return result;
     }
@@ -60,7 +66,25 @@ public class CompanyService {
         ParameterizedTypeReference<List<JobDTO>> responseType = new ParameterizedTypeReference<List<JobDTO>>() {
         };
 
-        var result = rt.exchange("http://localhost:8080/company/job/", HttpMethod.GET, httpEntity, responseType);
+        var url = hostAPIGestaoVagas.concat("/company/job/");
+
+        var result = rt.exchange(url, HttpMethod.GET, httpEntity, responseType);
         return result.getBody();
+    }
+
+    public String createJob(CreateJobsDTO jobs, String token) {
+        RestTemplate rt = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+
+        HttpEntity<CreateJobsDTO> request = new HttpEntity<>(jobs, headers);
+
+        var url = hostAPIGestaoVagas.concat("/company/job/");
+
+        var result = rt.postForObject(url, request, String.class);
+
+        return result;
     }
 }
