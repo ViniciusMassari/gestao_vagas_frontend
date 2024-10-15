@@ -75,6 +75,13 @@ public class CompanyController {
         }
     }
 
+    @GetMapping("/jobs/list")
+    @PreAuthorize("hasRole('COMPANY')")
+    public String list(Model model) {
+        // model.addAttribute("jobs", new CreateJobsDTO());
+        return "company/list";
+    }
+
     @GetMapping("/jobs")
     @PreAuthorize("hasRoles('COMPANY')")
     public String jobs() {
