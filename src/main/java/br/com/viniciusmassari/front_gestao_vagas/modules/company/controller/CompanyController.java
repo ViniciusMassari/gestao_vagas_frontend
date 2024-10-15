@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.viniciusmassari.front_gestao_vagas.modules.company.dto.CreateCompanyDTO;
+import br.com.viniciusmassari.front_gestao_vagas.modules.company.dto.CreateJobsDTO;
 import br.com.viniciusmassari.front_gestao_vagas.modules.company.service.CompanyService;
 import br.com.viniciusmassari.front_gestao_vagas.utils.FormatErrorMessage;
 import jakarta.servlet.http.HttpSession;
@@ -79,6 +80,8 @@ public class CompanyController {
     @PreAuthorize("hasRole('COMPANY')")
     public String list(Model model) {
         // model.addAttribute("jobs", new CreateJobsDTO());
+        var result = this.companyService.listAllJobsCompany(this.companyService.getToken());
+        model.addAttribute("jobs", result);
         return "company/list";
     }
 
@@ -86,5 +89,23 @@ public class CompanyController {
     @PreAuthorize("hasRoles('COMPANY')")
     public String jobs() {
         return "company/jobs";
+    }
+
+    @PostMapping("/jobs")
+    @PreAuthorize("hasRole('COMPANY')")
+    public String createJobs(CreateJobsDTO jobs) {
+        this.companyService.createJob(jobs, this.companyService.getToken());
+        return "redirect:/company/jobs/list";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+
+        SecurityContextHolder.getContext().setAuthentication(null);
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        session.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);
+        session.setAttribute("token", null);
+
+        return "redirect:/company/login";
     }
 }

@@ -1,11 +1,15 @@
 package br.com.viniciusmassari.front_gestao_vagas.modules.company.service;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
+import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.JobDTO;
 import br.com.viniciusmassari.front_gestao_vagas.modules.candidate.dto.Token;
 import br.com.viniciusmassari.front_gestao_vagas.modules.company.dto.CreateCompanyDTO;
 
@@ -39,5 +43,24 @@ public class CompanyService {
         System.out.println(result);
 
         return result;
+    }
+
+    public String getToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getDetails().toString();
+    }
+
+    public List<JobDTO> listAllJobsCompany(String token) {
+        RestTemplate rt = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Object> httpEntity = new HttpEntity<>(headers);
+
+        ParameterizedTypeReference<List<JobDTO>> responseType = new ParameterizedTypeReference<List<JobDTO>>() {
+        };
+
+        var result = rt.exchange("http://localhost:8080/company/job/", HttpMethod.GET, httpEntity, responseType);
+        return result.getBody();
     }
 }
